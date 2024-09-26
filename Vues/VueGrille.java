@@ -1,6 +1,7 @@
 package Vues;
 
-import Modeles.Case;
+import Controllers.grille.EcouteurGrille;
+import Modeles.Labyrinthe;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -10,50 +11,26 @@ import java.awt.*;
 
 public class VueGrille extends JPanel implements Observer {
 
-    private int widht = 600;
-    private int height = 600;
-    private final int paddingGrille = 5;
-    private final int paddingCase = 2;
-    private Case[][] grille;
+    private Labyrinthe labyrinthe;
+    private JButton[][] grille;
 
+    public VueGrille(Labyrinthe labyrinthe, int taille) {
+        this.labyrinthe = labyrinthe;
+        this.labyrinthe.addObserver(this);
+        setLayout(new GridLayout(taille, taille));
+        grille = new JButton[taille][taille];
 
-    public VueGrille(){
-    }
-
-    // Create the grid with case
-    public void createGrille(int taille){
-        grille = new Case[taille][taille];
         for (int i = 0; i < taille; i++) {
             for (int j = 0; j < taille; j++) {
-                grille[i][j] = new Case(i, j);
-            }
-        }
-    }
-
-    // Affiche la grille
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        int taille = grille.length;
-        int tailleCase = (widht - paddingGrille) / taille;
-        for (int i = 0; i < taille; i++) {
-            for (int j = 0; j < taille; j++) {
-                Case c = grille[i][j];
-                if (c.isMur()) {
-                    g.setColor(Color.BLACK);
-                } else if (c.isDepart()) {
-                    g.setColor(Color.RED);
-                } else if (c.isArrivee()) {
-                    g.setColor(Color.GREEN);
-                } else if (c.isVide()) {
-                    g.setColor(Color.WHITE);
-                }
-                g.fillRect(i * tailleCase + paddingCase, j * tailleCase + paddingCase, tailleCase - paddingCase, tailleCase - paddingCase);
+                grille[i][j] = new JButton();
+                grille[i][j].setPreferredSize(new Dimension(30, 30));
+                grille[i][j].addActionListener(new EcouteurGrille(labyrinthe, i, j));
+                add(grille[i][j]);
             }
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
-
     }
 }

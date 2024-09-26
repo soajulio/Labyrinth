@@ -1,13 +1,17 @@
 package Vues;
 
 import Controllers.boutons.EcouteurBoutons;
+import Modeles.Labyrinthe;
 
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.*;
 
 public class VueBoutons extends JPanel implements Observer {
+    private Labyrinthe labyrinthe;
+
     private JLabel phraseAccroche;
     private JButton boutonMur;
     private JButton boutonDepart;
@@ -17,8 +21,11 @@ public class VueBoutons extends JPanel implements Observer {
     private JButton boutonDemarrer;
     private EcouteurBoutons ecouteurBoutons;
 
-    public VueBoutons(EcouteurBoutons ecouteurBoutons){
+    public VueBoutons(Labyrinthe labyrinthe, EcouteurBoutons ecouteurBoutons){
         this.ecouteurBoutons = ecouteurBoutons;
+        this.labyrinthe = labyrinthe;
+        this.labyrinthe.addObserver(this);
+
         phraseAccroche = new JLabel("Composez votre labyrinthe ");
         boutonMur = new JButton("Mur");
         boutonDepart = new JButton("Depart");
@@ -26,6 +33,12 @@ public class VueBoutons extends JPanel implements Observer {
         boutonVide = new JButton("Vide");
         comboBoxAlgo = new JComboBox<String>();
         boutonDemarrer = new JButton("Demarrer");
+
+        boutonMur.setBackground(Color.BLACK);
+        boutonMur.setForeground(Color.WHITE);
+        boutonDepart.setBackground(Color.GREEN);
+        boutonArrivee.setBackground(Color.RED);
+        boutonVide.setBackground(Color.WHITE);
 
         this.add(phraseAccroche);
         this.add(boutonMur);
@@ -35,12 +48,11 @@ public class VueBoutons extends JPanel implements Observer {
         this.add(comboBoxAlgo);
         this.add(boutonDemarrer);
 
-        boutonDemarrer.addMouseListener(ecouteurBoutons);
-        boutonMur.addMouseListener(ecouteurBoutons);
-        boutonArrivee.addMouseListener(ecouteurBoutons);
-        boutonDepart.addMouseListener(ecouteurBoutons);
-        boutonVide.addMouseListener(ecouteurBoutons);
-        comboBoxAlgo.addMouseListener(ecouteurBoutons);
+        boutonDepart.addActionListener(ecouteurBoutons);
+        boutonArrivee.addActionListener(ecouteurBoutons);
+        boutonMur.addActionListener(ecouteurBoutons);
+        boutonVide.addActionListener(ecouteurBoutons);
+        boutonDemarrer.addActionListener(ecouteurBoutons);
 
         this.setVisible(true);
     }

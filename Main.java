@@ -9,6 +9,6 @@ public class Main {
 
         EcouteurBoutons ecouteurBoutons = new EcouteurBoutons(labyrinthe);
 
-        VueFenetre vueFenetre = new VueFenetre(ecouteurBoutons);
+        VueFenetre vueFenetre = new VueFenetre(labyrinthe, ecouteurBoutons);
     }
 }

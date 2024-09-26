@@ -7,42 +7,29 @@ import java.util.Observable;
 
 public class Labyrinthe extends Observable {
 
-    public String typeMurSelect(JButton boutonSelect)
-    {
-        List<String> typeMur = new ArrayList<>() {{
-            add("Mur");
-            add("Depart");
-            add("Arrivee");
-            add("Vide");
-            add("Demarrer");
-        }};
+    public enum EtatSelection { DEPART, ARRIVEE, MUR, VIDE, DEMARRER }
+    private EtatSelection etatActuel = EtatSelection.VIDE;
+    public boolean departClicked = false;
 
-        if(boutonSelect.getText().equals("Mur")){
-            System.out.println(typeMur.get(0));
-            return typeMur.get(0);
-        }
-
-        if(boutonSelect.getText().equals("Depart")){
-            System.out.println(typeMur.get(1));
-            return typeMur.get(1);
-        }
-
-        if(boutonSelect.getText().equals("Arrivee")){
-            System.out.println(typeMur.get(2));
-            return typeMur.get(2);
-        }
-
-        if(boutonSelect.getText().equals("Vide")){
-            System.out.println(typeMur.get(3));
-            return typeMur.get(3);
-        }
-
-        if(boutonSelect.getText().equals("Demarrer")){
-            System.out.println(typeMur.get(4));
-            return typeMur.get(4);
-        }
-
-        return null;
+    public boolean isDepartClicked() {
+        return departClicked;
     }
 
+    public void setDepartClicked(boolean departClicked) {
+        this.departClicked = departClicked;
+        setChanged();
+        notifyObservers();
+    }
+
+    // Méthode pour mettre à jour l'état
+    public void setEtatActuel(EtatSelection etat) {
+        this.etatActuel = etat;
+        setChanged();
+        notifyObservers(); // Si vous utilisez le pattern Observer
+    }
+
+    // Getter pour l'état actuel
+    public EtatSelection getEtatActuel() {
+        return etatActuel;
+    }
 }
