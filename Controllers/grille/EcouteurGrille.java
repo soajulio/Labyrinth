@@ -6,27 +6,45 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import static Modeles.Labyrinthe.EtatSelection.*;
 
-public class EcouteurGrille implements ActionListener {
+public class EcouteurGrille implements MouseListener {
 
     private Labyrinthe labyrinthe;
 
-    private int x, y;
 
-    public EcouteurGrille(Labyrinthe labyrinthe, int x, int y){
+    public EcouteurGrille(Labyrinthe labyrinthe){
         this.labyrinthe = labyrinthe;
-        this.x = x;
-        this.y = y;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mouseClicked(MouseEvent e) {
         JButton boutonClique = (JButton) e.getSource();
-        System.out.println("Bouton cliqué : " + x + " " + y + " " + labyrinthe.getEtatActuel() + " " + labyrinthe.isDepartClicked());
-        if (labyrinthe.getEtatActuel() == Labyrinthe.EtatSelection.VIDE && labyrinthe.isDepartClicked() == true) {
-            boutonClique.setBackground(Color.GREEN);
-        }
+        System.out.println("Bouton cliqué : " + labyrinthe.getEtatActuel() + " " + labyrinthe.isDepartClicked());
+        labyrinthe.setEtatButton(boutonClique);
+    }
+
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

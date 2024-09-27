@@ -32,15 +32,18 @@ public class EcouteurBoutons implements ActionListener {
                     break;
                 case "Arrivee":
                     labyrinthe.setEtatActuel((Labyrinthe.EtatSelection.ARRIVEE));
-                    System.out.println("Le bouton arrivée est sélectionné");
+                    labyrinthe.setArriveeClicked(true);
+                    System.out.println("Le bouton arrivée est sélectionné" + " " + labyrinthe.getEtatActuel() + " " + labyrinthe.isArriveeClicked());
                     break;
                 case "Mur":
                     labyrinthe.setEtatActuel((Labyrinthe.EtatSelection.MUR));
-                    System.out.println("Le bouton mur est sélectionné");
+                    labyrinthe.setMurClicked(true);
+                    System.out.println("Le bouton mur est sélectionné" + " " + labyrinthe.getEtatActuel() + " " + labyrinthe.isMurClicked());
                     break;
                 case "Vide":
                     labyrinthe.setEtatActuel((Labyrinthe.EtatSelection.VIDE));
-                    System.out.println("Le bouton vide est sélectionné");
+                    labyrinthe.setVideClicked(true);
+                    System.out.println("Le bouton vide est sélectionné" + " " + labyrinthe.getEtatActuel() + " " + labyrinthe.isVideClicked());
                     break;
                 case "Demarrer":
                     labyrinthe.setEtatActuel((Labyrinthe.EtatSelection.DEMARRER));

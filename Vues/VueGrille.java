@@ -11,12 +11,11 @@ import java.awt.*;
 
 public class VueGrille extends JPanel implements Observer {
 
-    private Labyrinthe labyrinthe;
     private JButton[][] grille;
+    private EcouteurGrille ecouteurGrille;
 
-    public VueGrille(Labyrinthe labyrinthe, int taille) {
-        this.labyrinthe = labyrinthe;
-        this.labyrinthe.addObserver(this);
+    public VueGrille(Labyrinthe labyrinthe, int taille, EcouteurGrille ecouteurGrille) {
+        this.ecouteurGrille = ecouteurGrille;
         setLayout(new GridLayout(taille, taille));
         grille = new JButton[taille][taille];
 
@@ -24,7 +23,8 @@ public class VueGrille extends JPanel implements Observer {
             for (int j = 0; j < taille; j++) {
                 grille[i][j] = new JButton();
                 grille[i][j].setPreferredSize(new Dimension(30, 30));
-                grille[i][j].addActionListener(new EcouteurGrille(labyrinthe, i, j));
+                grille[i][j].addMouseListener(ecouteurGrille);
+                grille[i][j].setBackground(Color.WHITE);
                 add(grille[i][j]);
             }
         }
