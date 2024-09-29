@@ -81,6 +81,8 @@ public class Labyrinthe extends Observable {
                     this.setDepartClicked(false);
                     setChanged();
                     notifyObservers();
+                } else {
+                    this.setEtatActuel(EtatSelection.VIDE);
                 }
                 break;
             case ARRIVEE:
@@ -94,6 +96,8 @@ public class Labyrinthe extends Observable {
                     this.setArriveeClicked(false);
                     setChanged();
                     notifyObservers();
+                } else {
+                    this.setEtatActuel(EtatSelection.VIDE);
                 }
                 break;
             case MUR:
@@ -102,6 +106,8 @@ public class Labyrinthe extends Observable {
                     this.setEtatActuel(EtatSelection.MUR);
                     setChanged();
                     notifyObservers();
+                } else {
+                    this.setEtatActuel(EtatSelection.VIDE);
                 }
                 break;
             case VIDE:
@@ -110,6 +116,8 @@ public class Labyrinthe extends Observable {
                     this.setEtatActuel(EtatSelection.VIDE);
                     setChanged();
                     notifyObservers();
+                } else {
+                    this.setEtatActuel(EtatSelection.VIDE);
                 }
                 break;
         }

@@ -31,7 +31,7 @@ public class VueBoutons extends JPanel implements Observer {
         boutonDepart = new JButton("Depart");
         boutonArrivee = new JButton("Arrivee");
         boutonVide = new JButton("Vide");
-        comboBoxAlgo = new JComboBox<String>();
+        comboBoxAlgo = new JComboBox<>(new String[]{"Largeur d'abord", "Profondeur d'abord", "Greedy Best First","Dijkstra", "A*", "IDA*"});
         boutonDemarrer = new JButton("Demarrer");
 
         boutonMur.setBackground(Color.BLACK);
@@ -48,11 +48,11 @@ public class VueBoutons extends JPanel implements Observer {
         this.add(comboBoxAlgo);
         this.add(boutonDemarrer);
 
-        boutonDepart.addActionListener(ecouteurBoutons);
-        boutonArrivee.addActionListener(ecouteurBoutons);
-        boutonMur.addActionListener(ecouteurBoutons);
-        boutonVide.addActionListener(ecouteurBoutons);
-        boutonDemarrer.addActionListener(ecouteurBoutons);
+        boutonDepart.addMouseListener(ecouteurBoutons);
+        boutonArrivee.addMouseListener(ecouteurBoutons);
+        boutonMur.addMouseListener(ecouteurBoutons);
+        boutonVide.addMouseListener(ecouteurBoutons);
+        boutonDemarrer.addMouseListener(ecouteurBoutons);
 
         this.setVisible(true);
     }

@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import static Modeles.Labyrinthe.EtatSelection.*;
-
 public class EcouteurGrille implements MouseListener {
 
     private Labyrinthe labyrinthe;

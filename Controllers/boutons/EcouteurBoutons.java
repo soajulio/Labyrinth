@@ -11,16 +11,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observer;
 
-public class EcouteurBoutons implements ActionListener {
+public class EcouteurBoutons implements MouseListener {
     private Labyrinthe labyrinthe;
 
     public EcouteurBoutons(Labyrinthe labyrinthe) {
         this.labyrinthe = labyrinthe;
     }
 
-
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mouseClicked(MouseEvent e) {
         Object o = e.getSource();
         if(o instanceof JButton){
             JButton bouton = (JButton) o;
@@ -41,6 +40,7 @@ public class EcouteurBoutons implements ActionListener {
                     System.out.println("Le bouton mur est sélectionné" + " " + labyrinthe.getEtatActuel() + " " + labyrinthe.isMurClicked());
                     break;
                 case "Vide":
+                case "":
                     labyrinthe.setEtatActuel((Labyrinthe.EtatSelection.VIDE));
                     labyrinthe.setVideClicked(true);
                     System.out.println("Le bouton vide est sélectionné" + " " + labyrinthe.getEtatActuel() + " " + labyrinthe.isVideClicked());
@@ -51,5 +51,25 @@ public class EcouteurBoutons implements ActionListener {
                     break;
             }
         }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
