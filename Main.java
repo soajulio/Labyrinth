@@ -1,3 +1,4 @@
+import Controllers.algo.EcouteurAlgo;
 import Controllers.boutons.EcouteurBoutons;
 import Controllers.grille.EcouteurGrille;
 import Modeles.Labyrinthe;
@@ -12,6 +13,8 @@ public class Main {
 
         EcouteurGrille ecouteurGrille = new EcouteurGrille(labyrinthe);
 
-        VueFenetre vueFenetre = new VueFenetre(labyrinthe, ecouteurBoutons, ecouteurGrille);
+        EcouteurAlgo ecouteurAlgo = new EcouteurAlgo(labyrinthe);
+
+        VueFenetre vueFenetre = new VueFenetre(labyrinthe, ecouteurBoutons, ecouteurGrille, ecouteurAlgo);
     }
 }

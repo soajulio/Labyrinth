@@ -1,5 +1,6 @@
 package Vues;
 
+import Controllers.algo.EcouteurAlgo;
 import Controllers.boutons.EcouteurBoutons;
 import Controllers.grille.EcouteurGrille;
 import Modeles.Labyrinthe;
@@ -14,14 +15,14 @@ public class VueFenetre extends JFrame implements Observer {
 
     private Labyrinthe labyrinthe;
 
-    public VueFenetre(Labyrinthe labyrinthe, EcouteurBoutons ecouteurBoutons, EcouteurGrille ecouteurGrille) {
+    public VueFenetre(Labyrinthe labyrinthe, EcouteurBoutons ecouteurBoutons, EcouteurGrille ecouteurGrille, EcouteurAlgo ecouteurAlgo) {
         this.setTitle("Labyrinthe");
         this.setSize(700, 700);
 
         this.labyrinthe = new Labyrinthe();
-        VueBoutons vueBoutons = new VueBoutons(labyrinthe, ecouteurBoutons);
+        VueBoutons vueBoutons = new VueBoutons(labyrinthe, ecouteurBoutons, ecouteurAlgo);
         VueAffichage vueAffichage = new VueAffichage();
-        VueGrille vueGrille = new VueGrille(this.labyrinthe, 10, ecouteurGrille);
+        VueGrille vueGrille = new VueGrille(labyrinthe, 10, ecouteurGrille);
 
         this.add(vueBoutons, BorderLayout.NORTH);
         this.add(vueAffichage, BorderLayout.SOUTH);

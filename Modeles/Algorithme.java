@@ -2,8 +2,10 @@ package Modeles;
 
 import javax.swing.*;
 import java.util.List;
+import java.awt.Point;
+
 
 public interface Algorithme {
-    List<JButton> resoudre();
+    List<Point> resoudre();
 }
 

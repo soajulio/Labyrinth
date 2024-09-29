@@ -1,5 +1,6 @@
 package Vues;
 
+import Controllers.algo.EcouteurAlgo;
 import Controllers.boutons.EcouteurBoutons;
 import Modeles.Labyrinthe;
 
@@ -20,9 +21,11 @@ public class VueBoutons extends JPanel implements Observer {
     private JComboBox<String> comboBoxAlgo;
     private JButton boutonDemarrer;
     private EcouteurBoutons ecouteurBoutons;
+    private EcouteurAlgo ecouteurAlgo;
 
-    public VueBoutons(Labyrinthe labyrinthe, EcouteurBoutons ecouteurBoutons){
+    public VueBoutons(Labyrinthe labyrinthe, EcouteurBoutons ecouteurBoutons, EcouteurAlgo ecouteurAlgo) {
         this.ecouteurBoutons = ecouteurBoutons;
+        this.ecouteurAlgo = ecouteurAlgo;
         this.labyrinthe = labyrinthe;
         this.labyrinthe.addObserver(this);
 
@@ -53,6 +56,7 @@ public class VueBoutons extends JPanel implements Observer {
         boutonMur.addMouseListener(ecouteurBoutons);
         boutonVide.addMouseListener(ecouteurBoutons);
         boutonDemarrer.addMouseListener(ecouteurBoutons);
+        comboBoxAlgo.addActionListener(ecouteurAlgo);
 
         this.setVisible(true);
     }

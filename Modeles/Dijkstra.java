@@ -1,52 +1,46 @@
-/**
 package Modeles;
-import javax.swing.*;
+
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
 public class Dijkstra implements Algorithme {
-
     private Labyrinthe labyrinthe;
 
     public Dijkstra(Labyrinthe labyrinthe) {
-        super();
+        this.labyrinthe = labyrinthe;
     }
 
     @Override
-    public List<JButton> resoudre() {
-        JButton depart = labyrinthe.getDepartButton();
-        JButton arrivee = labyrinthe.getArriveeButton();
+    public List<Point> resoudre() {
+        Point depart = labyrinthe.coordonneesDepart();
+        Point arrivee = labyrinthe.coordonneesArrivee();
 
-        PriorityQueue<JButton> file = new PriorityQueue<>(Comparator.comparingInt(b -> (int) b.getClientProperty("distance")));
-        Map<JButton, Integer> distances = new HashMap<>();
-        Map<JButton, JButton> predecesseurs = new HashMap<>();
+        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(n -> n.distance));
+        Map<Point, Integer> distances = new HashMap<>();
+        Map<Point, Point> predecesseurs = new HashMap<>();
 
-        for (JButton[] ligne : labyrinthe.getGrille()) {
-            for (JButton bouton : ligne) {
-                distances.put(bouton, Integer.MAX_VALUE);
-                bouton.putClientProperty("distance", Integer.MAX_VALUE);
-            }
-        }
+        queue.offer(new Node(depart, 0));
         distances.put(depart, 0);
-        depart.putClientProperty("distance", 0);
-        file.offer(depart);
 
-        while (!file.isEmpty()) {
-            JButton courant = file.poll();
-            if (courant == arrivee) {
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+            labyrinthe.marquerCaseConsultee(current.point);
+
+            if (current.point.equals(arrivee)) {
                 return reconstruireChemin(predecesseurs, arrivee);
             }
 
-            for (JButton voisin : labyrinthe.getVoisins(courant)) {
-                int newDist = distances.get(courant) + 1;
-                if (newDist < distances.get(voisin)) {
+            for (Point voisin : labyrinthe.getVoisinsAccessibles(current.point)) {
+                int newDist = distances.get(current.point) + 1;
+                if (newDist < distances.getOrDefault(voisin, Integer.MAX_VALUE)) {
                     distances.put(voisin, newDist);
-                    predecesseurs.put(voisin, courant);
-                    voisin.putClientProperty("distance", newDist);
-                    file.remove(voisin);
-                    file.offer(voisin);
-                    voisin.setBackground(Color.YELLOW); // Marquer comme exploré
-                    labyrinthe.notifierChangement();
+                    predecesseurs.put(voisin, current.point);
+                    queue.offer(new Node(voisin, newDist));
                 }
             }
         }
@@ -54,13 +48,21 @@ public class Dijkstra implements Algorithme {
         return null; // Pas de chemin trouvé
     }
 
-    private List<JButton> reconstruireChemin(Map<JButton, JButton> predecesseurs, JButton arrivee) {
-        List<JButton> chemin = new ArrayList<>();
-        JButton courant = arrivee;
-        while (courant != null) {
-            chemin.add(0, courant);
-            courant = predecesseurs.get(courant);
+    private List<Point> reconstruireChemin(Map<Point, Point> predecesseurs, Point arrivee) {
+        List<Point> chemin = new ArrayList<>();
+        for (Point at = arrivee; at != null; at = predecesseurs.get(at)) {
+            chemin.add(0, at);
         }
         return chemin;
     }
-} */
+
+    private static class Node {
+        Point point;
+        int distance;
+
+        Node(Point p, int d) {
+            point = p;
+            distance = d;
+        }
+    }
+}

@@ -23,9 +23,18 @@ public class VueGrille extends JPanel implements Observer {
             for (int j = 0; j < taille; j++) {
                 grille[i][j] = new JButton();
                 grille[i][j].setPreferredSize(new Dimension(30, 30));
-                grille[i][j].addMouseListener(ecouteurGrille);
                 grille[i][j].setBackground(Color.WHITE);
                 add(grille[i][j]);
+            }
+        }
+        // Transmettre la grille à l'objet Labyrinthe
+        labyrinthe.setGrille(grille);
+        System.out.println("Grille transmise à l'objet Labyrinthe");
+
+        // Ajout des écouteurs après l'initialisation de la grille
+        for (int i = 0; i < taille; i++) {
+            for (int j = 0; j < taille; j++) {
+                grille[i][j].addMouseListener(ecouteurGrille);
             }
         }
     }
