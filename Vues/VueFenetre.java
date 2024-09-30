@@ -19,9 +19,10 @@ public class VueFenetre extends JFrame implements Observer {
         this.setTitle("Labyrinthe");
         this.setSize(700, 700);
 
-        this.labyrinthe = new Labyrinthe();
+        this.labyrinthe = labyrinthe;
         VueBoutons vueBoutons = new VueBoutons(labyrinthe, ecouteurBoutons, ecouteurAlgo);
         VueAffichage vueAffichage = new VueAffichage();
+        labyrinthe.addObserver(vueAffichage);
         VueGrille vueGrille = new VueGrille(labyrinthe, 10, ecouteurGrille);
 
         this.add(vueBoutons, BorderLayout.NORTH);

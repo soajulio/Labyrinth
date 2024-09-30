@@ -3,8 +3,13 @@ package Modeles;
 import java.awt.Point;
 import java.util.*;
 
-public class AStar implements Algorithme {
+public class AStar implements IRecherche {
     private Labyrinthe labyrinthe;
+    private long tempsExecution;
+    private int noeudsGeneres;
+    private boolean cheminTrouve;
+    private int longueurChemin;
+    private long debut;
 
     public AStar(Labyrinthe labyrinthe) {
         this.labyrinthe = labyrinthe;
@@ -12,6 +17,10 @@ public class AStar implements Algorithme {
 
     @Override
     public List<Point> resoudre() {
+        debut = System.currentTimeMillis();
+        noeudsGeneres = 0;
+        cheminTrouve = false;
+
         Point depart = labyrinthe.coordonneesDepart();
         Point arrivee = labyrinthe.coordonneesArrivee();
 
@@ -30,7 +39,11 @@ public class AStar implements Algorithme {
             labyrinthe.marquerCaseConsultee(current.point);
 
             if (current.point.equals(arrivee)) {
-                return reconstruireChemin(cameFrom, current.point);
+                List<Point> chemin = reconstruireChemin(cameFrom, current.point);
+                cheminTrouve = true;
+                longueurChemin = chemin.size() - 1;
+                mettreAJourStatistiques();
+                return chemin;
             }
 
             closedSet.add(current.point);
@@ -54,6 +67,7 @@ public class AStar implements Algorithme {
             }
         }
 
+        mettreAJourStatistiques();
         return null; // Pas de chemin trouvé
     }
 
@@ -72,7 +86,15 @@ public class AStar implements Algorithme {
         return chemin;
     }
 
-    private static class Node {
+    private void mettreAJourStatistiques() {
+        tempsExecution = System.currentTimeMillis() - debut;
+        labyrinthe.setTimeExecution(tempsExecution / 1000f);  // Convertir en secondes
+        labyrinthe.setGeneratedStates(noeudsGeneres);
+        labyrinthe.setPathFound(cheminTrouve);
+        labyrinthe.setPathLength(longueurChemin);
+    }
+
+    private class Node {
         Point point;
         int gCost;
         int fCost;
@@ -81,6 +103,7 @@ public class AStar implements Algorithme {
             this.point = point;
             this.gCost = gCost;
             this.fCost = fCost;
+            noeudsGeneres++;  // Incrémenter le compteur à chaque création de nœud
         }
 
         @Override

@@ -3,10 +3,14 @@ package Modeles;
 import java.awt.Point;
 import java.util.*;
 
-public class IDAStar implements Algorithme {
+public class IDAStar implements IRecherche {
     private Labyrinthe labyrinthe;
     private Point arrivee;
     private int noeudsGeneres;
+    private long tempsExecution;
+    private boolean cheminTrouve;
+    private int longueurChemin;
+    private long debut;
 
     public IDAStar(Labyrinthe labyrinthe) {
         this.labyrinthe = labyrinthe;
@@ -15,6 +19,10 @@ public class IDAStar implements Algorithme {
 
     @Override
     public List<Point> resoudre() {
+        debut = System.currentTimeMillis();
+        noeudsGeneres = 0;
+        cheminTrouve = false;
+
         Point depart = labyrinthe.coordonneesDepart();
         this.arrivee = labyrinthe.coordonneesArrivee();
 
@@ -22,9 +30,13 @@ public class IDAStar implements Algorithme {
         while (true) {
             Pair<List<Point>, Integer> resultat = recherche(depart, 0, limite, new ArrayList<>());
             if (resultat.getFirst() != null) {
+                cheminTrouve = true;
+                longueurChemin = resultat.getFirst().size() - 1;
+                mettreAJourStatistiques();
                 return resultat.getFirst(); // Chemin trouvé
             }
             if (resultat.getSecond() == Integer.MAX_VALUE) {
+                mettreAJourStatistiques();
                 return null; // Pas de chemin trouvé
             }
             limite = resultat.getSecond(); // Nouvelle limite pour la prochaine itération
@@ -64,6 +76,14 @@ public class IDAStar implements Algorithme {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
+    private void mettreAJourStatistiques() {
+        tempsExecution = System.currentTimeMillis() - debut;
+        labyrinthe.setTimeExecution(tempsExecution / 1000f);  // Convertir en secondes
+        labyrinthe.setGeneratedStates(noeudsGeneres);
+        labyrinthe.setPathFound(cheminTrouve);
+        labyrinthe.setPathLength(longueurChemin);
+    }
+
     private static class Pair<T, U> {
         private final T first;
         private final U second;
@@ -75,9 +95,5 @@ public class IDAStar implements Algorithme {
 
         public T getFirst() { return first; }
         public U getSecond() { return second; }
-    }
-
-    public int getNoeudsGeneres() {
-        return noeudsGeneres;
     }
 }

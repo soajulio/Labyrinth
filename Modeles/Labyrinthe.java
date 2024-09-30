@@ -13,7 +13,6 @@ public class Labyrinthe extends Observable {
     private EtatSelection etatActuel = EtatSelection.VIDE;
 
     public boolean departClicked = false;
-    private boolean demarrerClicked = false;
     private boolean arriveeClicked = false;
     private boolean murClicked = false;
     private boolean videClicked = false;
@@ -23,9 +22,6 @@ public class Labyrinthe extends Observable {
 
     private JButton[][] grille;
 
-    public static int counter = 0;
-    private final int id;
-
     private String algorithmeSelectionne;
 
     private float timeExecution;
@@ -33,30 +29,12 @@ public class Labyrinthe extends Observable {
     private boolean pathFound;
     private int pathLength;
 
-    public Labyrinthe() {
-        this.id = counter++;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     public boolean isDepartClicked() {
         return departClicked;
     }
 
     public void setDepartClicked(boolean departClicked) {
         this.departClicked = departClicked;
-        setChanged();
-        notifyObservers();
-    }
-
-    public boolean isDemarrerClicked() {
-        return demarrerClicked;
-    }
-
-    public void setDemarrerClicked(boolean demarrerClicked) {
-        this.demarrerClicked = demarrerClicked;
         setChanged();
         notifyObservers();
     }
@@ -91,6 +69,7 @@ public class Labyrinthe extends Observable {
         notifyObservers();
     }
 
+    // Définition des états des boutons de la grille
     public void setEtatButton(JButton button) {
         switch (this.getEtatActuel()) {
             case DEPART:
@@ -146,19 +125,17 @@ public class Labyrinthe extends Observable {
         }
     }
 
-    // Méthode pour mettre à jour l'état
     public void setEtatActuel(EtatSelection etat) {
         this.etatActuel = etat;
         setChanged();
-        notifyObservers(); // Si vous utilisez le pattern Observer
+        notifyObservers();
     }
 
-    // Getter pour l'état actuel
     public EtatSelection getEtatActuel() {
         return etatActuel;
     }
 
-    // Logique pour Ecouteurboutons
+    // Logique pour ecoûter les boutons du menu
     public void setEtatBoutonMenu(JButton bouton) {
         switch (bouton.getText()) {
             case "Depart":
@@ -189,13 +166,11 @@ public class Labyrinthe extends Observable {
         }
     }
 
-    // Méthode pour initialiser la grille
     public void setGrille(JButton[][] grille) {
         this.grille = grille;
         System.out.println("Grille initialisée avec succès !");
     }
 
-    // Méthode retournant la grille
     public JButton[][] getGrille() {
         return grille;
     }
@@ -215,6 +190,7 @@ public class Labyrinthe extends Observable {
         return null;
     }
 
+    // Méthode retournant Coordonnees bouton d'arrivée
     public Point coordonneesArrivee() {
         if(this.grille == null) {
             throw new IllegalStateException("La grille n'a pas été initialisée.");
@@ -227,6 +203,26 @@ public class Labyrinthe extends Observable {
             }
         }
         return null;
+    }
+
+    // Méthode pour afficher les coordonnées des boutons de départ et d'arrivée
+    public void logDepartArrivee() {
+        if (this.getGrille() != null) {
+            Point coordonneesDepart = this.coordonneesDepart();
+            Point coordonneesArrivee = this.coordonneesArrivee();
+            if (coordonneesDepart != null) {
+                System.out.println("Bouton de départ : " + coordonneesDepart);
+            } else {
+                System.out.println("Aucun bouton de départ trouvé.");
+            }
+            if (coordonneesArrivee != null) {
+                System.out.println("Bouton d'arrivée : " + coordonneesArrivee);
+            } else {
+                System.out.println("Aucun bouton d'arrivée trouvé.");
+            }
+        } else {
+            System.out.println("La grille n'a pas encore été initialisée.");
+        }
     }
 
     public boolean estMur(int x, int y) {
@@ -256,8 +252,8 @@ public class Labyrinthe extends Observable {
         return algorithmeSelectionne;
     }
 
+    // Méthode pour mettre à jour la grille avec le nouveau chemin
     public void setChemin(List<Point> chemin) {
-        // Ne pas effacer les cases jaunes, vertes, rouges ou noires
         for (int i = 0; i < grille.length; i++) {
             for (int j = 0; j < grille[i].length; j++) {
                 Color couleurActuelle = grille[i][j].getBackground();
@@ -268,18 +264,15 @@ public class Labyrinthe extends Observable {
             }
         }
 
-        // Mettez à jour la grille avec le nouveau chemin
         for (Point p : chemin) {
             Color couleurActuelle = grille[p.x][p.y].getBackground();
             if (couleurActuelle != Color.GREEN && couleurActuelle != Color.RED) {
                 grille[p.x][p.y].setBackground(Color.CYAN);
             }
         }
-
         setChanged();
         notifyObservers();
     }
-
 
     public void marquerCaseConsultee(Point p) {
         if (grille[p.x][p.y].getBackground() != Color.GREEN &&
@@ -342,5 +335,79 @@ public class Labyrinthe extends Observable {
 
     public int getPathLength() {
         return pathLength;
+    }
+
+    // Logique exécution des algorithmes
+    public void doAlgo(JButton bouton) {
+        if(bouton.getText().equals("Demarrer")){
+            this.reinitialiserGrille();
+             String algoSelectionne = this.getAlgorithmeSelectionne();
+            IRecherche algo;
+
+            switch (algoSelectionne) {
+                case "Dijkstra":
+                    algo = new Dijkstra(this);
+                    List<Point> cheminDijkstra = algo.resoudre();
+                    if (cheminDijkstra != null) {
+                        this.setChemin(cheminDijkstra);
+                        System.out.println("Algo Dijkstra réussi, chemin trouvé");
+                    } else {
+                        System.out.println("Algo Dijkstra terminé, pas de chemin trouvé");
+                    }
+                    break;
+                case "A*":
+                    algo = new AStar(this);
+                    List<Point> cheminAStar = algo.resoudre();
+                    if (cheminAStar != null) {
+                        this.setChemin(cheminAStar);
+                        System.out.println("Algo A* réussi, chemin trouvé");
+                    } else {
+                        System.out.println("Algo A* terminé, pas de chemin trouvé");
+                    }
+                    break;
+                case "Largeur d'abord":
+                    algo = new LargeurDabord(this);
+                    List<Point> cheminLargeurDabord = algo.resoudre();
+                    if (cheminLargeurDabord != null) {
+                        this.setChemin(cheminLargeurDabord);
+                        System.out.println("Algo Largeur d'abord réussi, chemin trouvé");
+                    } else {
+                        System.out.println("Algo Largeur d'abord terminé, pas de chemin trouvé");
+                    }
+                    break;
+                case "Profondeur d'abord":
+                    algo = new ProfondeurDabord(this);
+                    List<Point> cheminProfondeurDabord = algo.resoudre();
+                    if (cheminProfondeurDabord != null) {
+                        this.setChemin(cheminProfondeurDabord);
+                        System.out.println("Algo Profondeur d'abord réussi, chemin trouvé");
+                    } else {
+                        System.out.println("Algo Profondeur d'abord terminé, pas de chemin trouvé");
+                    }
+                    break;
+                case "Greedy Best First":
+                    algo = new GreedyBestFirst(this);
+                    List<Point> cheminGreedyBestFirst = algo.resoudre();
+                    if (cheminGreedyBestFirst != null) {
+                        this.setChemin(cheminGreedyBestFirst);
+                        System.out.println("Algo Greedy Best First réussi, chemin trouvé");
+                    } else {
+                        System.out.println("Algo Greedy Best First terminé, pas de chemin trouvé");
+                    }
+                    break;
+                case "IDA*":
+                    algo = new IDAStar(this);
+                    List<Point> cheminIDAStar = algo.resoudre();
+                    if (cheminIDAStar != null) {
+                        this.setChemin(cheminIDAStar);
+                        System.out.println("Algo IDA* réussi, chemin trouvé");
+                    } else {
+                        System.out.println("Algo IDA* terminé, pas de chemin trouvé");
+                    }
+                    break;
+                default:
+                    System.out.println("IRecherche non reconnu");
+            }
+        }
     }
 }

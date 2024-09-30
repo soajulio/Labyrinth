@@ -3,8 +3,13 @@ package Modeles;
 import java.awt.Point;
 import java.util.*;
 
-public class LargeurDabord implements Algorithme {
+public class LargeurDabord implements IRecherche {
     private Labyrinthe labyrinthe;
+    private long tempsExecution;
+    private int noeudsGeneres;
+    private boolean cheminTrouve;
+    private int longueurChemin;
+    private long debut;
 
     public LargeurDabord(Labyrinthe labyrinthe) {
         this.labyrinthe = labyrinthe;
@@ -12,6 +17,10 @@ public class LargeurDabord implements Algorithme {
 
     @Override
     public List<Point> resoudre() {
+        debut = System.currentTimeMillis();
+        noeudsGeneres = 0;
+        cheminTrouve = false;
+
         Point depart = labyrinthe.coordonneesDepart();
         Point arrivee = labyrinthe.coordonneesArrivee();
 
@@ -21,13 +30,18 @@ public class LargeurDabord implements Algorithme {
 
         queue.offer(depart);
         visites.add(depart);
+        noeudsGeneres++;
 
         while (!queue.isEmpty()) {
             Point courant = queue.poll();
             labyrinthe.marquerCaseConsultee(courant);
 
             if (courant.equals(arrivee)) {
-                return reconstruireChemin(predecesseurs, arrivee);
+                List<Point> chemin = reconstruireChemin(predecesseurs, arrivee);
+                cheminTrouve = true;
+                longueurChemin = chemin.size() - 1; // -1 car on ne compte pas le départ
+                mettreAJourStatistiques();
+                return chemin;
             }
 
             for (Point voisin : labyrinthe.getVoisinsAccessibles(courant)) {
@@ -35,10 +49,12 @@ public class LargeurDabord implements Algorithme {
                     queue.offer(voisin);
                     visites.add(voisin);
                     predecesseurs.put(voisin, courant);
+                    noeudsGeneres++;
                 }
             }
         }
 
+        mettreAJourStatistiques();
         return null; // Pas de chemin trouvé
     }
 
@@ -50,5 +66,13 @@ public class LargeurDabord implements Algorithme {
             courant = predecesseurs.get(courant);
         }
         return chemin;
+    }
+
+    private void mettreAJourStatistiques() {
+        tempsExecution = System.currentTimeMillis() - debut;
+        labyrinthe.setTimeExecution(tempsExecution / 1000f);  // Convertir en secondes
+        labyrinthe.setGeneratedStates(noeudsGeneres);
+        labyrinthe.setPathFound(cheminTrouve);
+        labyrinthe.setPathLength(longueurChemin);
     }
 }

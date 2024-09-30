@@ -1,15 +1,15 @@
 package Modeles;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Comparator;
+import java.awt.Point;
+import java.util.*;
 
-public class Dijkstra implements Algorithme {
+public class Dijkstra implements IRecherche {
     private Labyrinthe labyrinthe;
+    private long tempsExecution;
+    private int noeudsGeneres;
+    private boolean cheminTrouve;
+    private int longueurChemin;
+    private long debut;
 
     public Dijkstra(Labyrinthe labyrinthe) {
         this.labyrinthe = labyrinthe;
@@ -17,6 +17,10 @@ public class Dijkstra implements Algorithme {
 
     @Override
     public List<Point> resoudre() {
+        debut = System.currentTimeMillis();
+        noeudsGeneres = 0;
+        cheminTrouve = false;
+
         Point depart = labyrinthe.coordonneesDepart();
         Point arrivee = labyrinthe.coordonneesArrivee();
 
@@ -32,7 +36,11 @@ public class Dijkstra implements Algorithme {
             labyrinthe.marquerCaseConsultee(current.point);
 
             if (current.point.equals(arrivee)) {
-                return reconstruireChemin(predecesseurs, arrivee);
+                List<Point> chemin = reconstruireChemin(predecesseurs, arrivee);
+                cheminTrouve = true;
+                longueurChemin = chemin.size() - 1;  // -1 car on ne compte pas le départ
+                mettreAJourStatistiques();
+                return chemin;
             }
 
             for (Point voisin : labyrinthe.getVoisinsAccessibles(current.point)) {
@@ -45,6 +53,7 @@ public class Dijkstra implements Algorithme {
             }
         }
 
+        mettreAJourStatistiques();
         return null; // Pas de chemin trouvé
     }
 
@@ -56,13 +65,22 @@ public class Dijkstra implements Algorithme {
         return chemin;
     }
 
-    private static class Node {
+    private void mettreAJourStatistiques() {
+        tempsExecution = System.currentTimeMillis() - debut;
+        labyrinthe.setTimeExecution(tempsExecution / 1000f);  // Convertir en secondes
+        labyrinthe.setGeneratedStates(noeudsGeneres);
+        labyrinthe.setPathFound(cheminTrouve);
+        labyrinthe.setPathLength(longueurChemin);
+    }
+
+    private class Node {
         Point point;
         int distance;
 
         Node(Point p, int d) {
             point = p;
             distance = d;
+            noeudsGeneres++;  // Incrémenter le compteur à chaque création de nœud
         }
     }
 }

@@ -3,8 +3,13 @@ package Modeles;
 import java.awt.Point;
 import java.util.*;
 
-public class GreedyBestFirst implements Algorithme {
+public class GreedyBestFirst implements IRecherche {
     private Labyrinthe labyrinthe;
+    private long tempsExecution;
+    private int noeudsGeneres;
+    private boolean cheminTrouve;
+    private int longueurChemin;
+    private long debut;
 
     public GreedyBestFirst(Labyrinthe labyrinthe) {
         this.labyrinthe = labyrinthe;
@@ -12,6 +17,10 @@ public class GreedyBestFirst implements Algorithme {
 
     @Override
     public List<Point> resoudre() {
+        debut = System.currentTimeMillis();
+        noeudsGeneres = 0;
+        cheminTrouve = false;
+
         Point depart = labyrinthe.coordonneesDepart();
         Point arrivee = labyrinthe.coordonneesArrivee();
 
@@ -26,7 +35,11 @@ public class GreedyBestFirst implements Algorithme {
             labyrinthe.marquerCaseConsultee(current.point);
 
             if (current.point.equals(arrivee)) {
-                return reconstruireChemin(cameFrom, current.point);
+                List<Point> chemin = reconstruireChemin(cameFrom, current.point);
+                cheminTrouve = true;
+                longueurChemin = chemin.size() - 1; // -1 car on ne compte pas le départ
+                mettreAJourStatistiques();
+                return chemin;
             }
 
             closedSet.add(current.point);
@@ -43,6 +56,7 @@ public class GreedyBestFirst implements Algorithme {
             }
         }
 
+        mettreAJourStatistiques();
         return null; // Pas de chemin trouvé
     }
 
@@ -60,13 +74,22 @@ public class GreedyBestFirst implements Algorithme {
         return chemin;
     }
 
-    private static class Node {
+    private void mettreAJourStatistiques() {
+        tempsExecution = System.currentTimeMillis() - debut;
+        labyrinthe.setTimeExecution(tempsExecution / 1000f);  // Convertir en secondes
+        labyrinthe.setGeneratedStates(noeudsGeneres);
+        labyrinthe.setPathFound(cheminTrouve);
+        labyrinthe.setPathLength(longueurChemin);
+    }
+
+    private class Node {
         Point point;
         int hCost;
 
         Node(Point point, int hCost) {
             this.point = point;
             this.hCost = hCost;
+            noeudsGeneres++;  // Incrémenter le compteur à chaque création de nœud
         }
 
         @Override
