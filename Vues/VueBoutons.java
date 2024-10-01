@@ -66,4 +66,3 @@ public class VueBoutons extends JPanel implements Observer {
 
     }
 }
-

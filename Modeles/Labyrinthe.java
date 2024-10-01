@@ -135,7 +135,7 @@ public class Labyrinthe extends Observable {
         return etatActuel;
     }
 
-    // Logique pour ecoûter les boutons du menu
+    // Logique pour écouter les boutons du menu
     public void setEtatBoutonMenu(JButton bouton) {
         switch (bouton.getText()) {
             case "Depart":
@@ -175,7 +175,7 @@ public class Labyrinthe extends Observable {
         return grille;
     }
 
-    // Méthode retournant Coordonnees bouton de départ
+    // Méthode retournant les Coordonnees du bouton de départ
     public Point coordonneesDepart() {
         if (this.grille == null) {
             throw new IllegalStateException("La grille n'a pas été initialisée.");
@@ -190,7 +190,7 @@ public class Labyrinthe extends Observable {
         return null;
     }
 
-    // Méthode retournant Coordonnees bouton d'arrivée
+    // Méthode retournant les Coordonnees du bouton d'arrivée
     public Point coordonneesArrivee() {
         if(this.grille == null) {
             throw new IllegalStateException("La grille n'a pas été initialisée.");
@@ -339,6 +339,16 @@ public class Labyrinthe extends Observable {
 
     // Logique exécution des algorithmes
     public void doAlgo(JButton bouton) {
+        if (coordonneesDepart() == null || coordonneesArrivee() == null) {
+            JOptionPane.showMessageDialog(null, "Veuillez placer une case de départ et une case d'arrivée.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (algorithmeSelectionne == null || algorithmeSelectionne.equals("Sélectionner un algo")) {
+            JOptionPane.showMessageDialog(null, "Veuillez sélectionner un algorithme.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         if(bouton.getText().equals("Demarrer")){
             this.reinitialiserGrille();
              String algoSelectionne = this.getAlgorithmeSelectionne();
@@ -406,7 +416,7 @@ public class Labyrinthe extends Observable {
                     }
                     break;
                 default:
-                    System.out.println("IRecherche non reconnu");
+                    System.out.println("Algo non reconnu");
             }
         }
     }

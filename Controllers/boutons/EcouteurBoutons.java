@@ -15,13 +15,20 @@ public class EcouteurBoutons implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        Object o = e.getSource();
-        if(o instanceof JButton){
-            JButton bouton = (JButton) o;
-            labyrinthe.setEtatBoutonMenu(bouton);
-            labyrinthe.doAlgo(bouton);
+        JButton source = (JButton) e.getSource();
+        if (source.getText().equals("Demarrer")) {
+            try {
+                labyrinthe.doAlgo(source);
+            } catch (IllegalStateException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Une erreur inattendue est survenue : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            labyrinthe.setEtatBoutonMenu(source);
         }
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
